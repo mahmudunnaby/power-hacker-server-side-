@@ -27,6 +27,8 @@ async function run() {
 
         const billCollection = client.db("power-hacker").collection("bills")
 
+        // Get all bills
+
         app.get('/billing-list', async (req, res) => {
 
             const query = {}
@@ -35,7 +37,7 @@ async function run() {
             res.send(bills)
 
         })
-
+        // Post a bill
         app.post('/add-billing', async (req, res) => {
 
             const newBill = req.body
@@ -44,6 +46,21 @@ async function run() {
 
         })
 
+        // Update a bill
+        app.put('/update-billing/:id', async (req, res) => {
+            const id = req.params.id
+            const updateBill = req.body
+            const filter = { _id: ObjectId(id) }
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: updateBill
+
+            }
+
+            const result = await billCollection.updateOne(filter, updatedDoc, options)
+
+            res.send(result)
+        })
 
 
     }
